@@ -16,9 +16,9 @@ const char* password = "YOUR_WIFI_PASSWORD"; // MUST CHANGE
 const int PIN_TRIG = 5;
 const int PIN_ECHO = 34;
 const int PIN_RCWL = 4;
-const int PIN_SERVO_SCAN = 13; // Continuous scanning radar
-const int PIN_SERVO_PAN  = 12; // Base of the targeting turret
-const int PIN_SERVO_TILT = 14; // Head of the targeting turret
+const int PIN_SERVO_SCAN = 13; 
+const int PIN_SERVO_PAN  = 12; 
+const int PIN_SERVO_TILT = 14; 
 
 // --- HARDWARE ---
 Servo scanServo;
@@ -45,8 +45,8 @@ float measureDistance() {
     delayMicroseconds(10);
     digitalWrite(PIN_TRIG, LOW);
     
-    long duration = pulseIn(PIN_ECHO, HIGH, 30000); // 30ms timeout
-    if (duration == 0) return 400.0; // Max range if no echo
+    long duration = pulseIn(PIN_ECHO, HIGH, 30000); 
+    if (duration == 0) return 400.0; 
     return (duration * 0.0343) / 2.0;
 }
 
@@ -63,11 +63,31 @@ void notifyClients() {
 
 void setup() {
     Serial.begin(115200);
+    Serial.println("\n\n[SYSTEM] Booting Smart Sentry... Staggering power to prevent brownout.");
     
     pinMode(PIN_TRIG, OUTPUT);
     pinMode(PIN_ECHO, INPUT);
     pinMode(PIN_RCWL, INPUT);
 
+    // 1. Boot WiFi FIRST (Draws ~400mA spike during RF calibration)
+    WiFi.softAP(ssid, password);
+    Serial.print("[WIFI] AP Started. Connect to SSID: ");
+    Serial.println(ssid);
+    Serial.print("[WIFI] Dashboard IP: ");
+    Serial.println(WiFi.softAPIP());
+    delay(1000); // Wait for power to stabilize
+
+    // 2. Boot Web Server
+    ws.onEvent([](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len){});
+    server.addHandler(&ws);
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send_P(200, "text/html", htmlDashboard);
+    });
+    server.begin();
+    Serial.println("[SYSTEM] Web Server Running.");
+    delay(500); // Stabilize again
+
+    // 3. Boot Servos ONE AT A TIME
     ESP32PWM::allocateTimer(0);
     ESP32PWM::allocateTimer(1);
     ESP32PWM::allocateTimer(2);
@@ -76,38 +96,27 @@ void setup() {
     panServo.setPeriodHertz(50);
     tiltServo.setPeriodHertz(50);
     
-    scanServo.attach(PIN_SERVO_SCAN, 500, 2400);
-    panServo.attach(PIN_SERVO_PAN, 500, 2400);
+    Serial.println("[SYSTEM] Initializing Servos sequentially...");
+    
     tiltServo.attach(PIN_SERVO_TILT, 500, 2400);
+    tiltServo.write(90);
+    delay(300);
 
+    panServo.attach(PIN_SERVO_PAN, 500, 2400);
+    panServo.write(90);
+    delay(300);
+
+    scanServo.attach(PIN_SERVO_SCAN, 500, 2400);
     scanServo.write(currentScanAngle);
-    panServo.write(90);  // Center targeting turret
-    tiltServo.write(90); // Level targeting turret
-    
-    Serial.println("\n[SYSTEM] Booting Smart Sentry...");
-    WiFi.softAP(ssid, password);
-    Serial.print("[WIFI] AP Started. Connect to SSID: ");
-    Serial.println(ssid);
-    Serial.print("[WIFI] Dashboard IP: ");
-    Serial.println(WiFi.softAPIP());
+    delay(300);
 
-    ws.onEvent([](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len){});
-    server.addHandler(&ws);
-    
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send_P(200, "text/html", htmlDashboard);
-    });
-    
-    server.begin();
-    Serial.println("[SYSTEM] Web Server Running. Starting Radar Sweep...");
-    delay(2000); 
+    Serial.println("[SYSTEM] Boot Sequence Complete. Starting Radar Sweep...");
 }
 
 void loop() {
     ws.cleanupClients();
     unsigned long now = millis();
 
-    // 1. CONTINUOUS SWEEP (Scan Servo Only)
     if (now - lastServoMove >= 30) {
         currentScanAngle += scanDirection;
         if (currentScanAngle >= 160) {
@@ -121,7 +130,6 @@ void loop() {
         lastServoMove = now;
     }
 
-    // 2. SENSOR PINGING
     if (now - lastSensorRead >= 50) {
         bool rcwlActive = (digitalRead(PIN_RCWL) == HIGH);
         float rawDist = measureDistance();
@@ -129,10 +137,8 @@ void loop() {
         kalman.update(rawDist);
         float filteredDist = kalman.getDistance();
 
-        // Target Logic
         if (rcwlActive && filteredDist < 150.0) {
             currentState = "THREAT_DETECTED";
-            // Aim the independent targeting turret at the threat
             panServo.write(currentScanAngle);
         } else {
             currentState = "SCANNING";
@@ -144,7 +150,6 @@ void loop() {
         lastSensorRead = now;
     }
 
-    // 3. TELEMETRY
     if (now - lastTelemetry >= 50) { 
         notifyClients();
         lastTelemetry = now;
