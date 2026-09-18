@@ -14,12 +14,14 @@ const char* password = "YOUR_WIFI_PASSWORD"; // MUST CHANGE
 
 // --- PINS ---
 const int PIN_TRIG = 5;
-const int PIN_ECHO = 34; // Input only
+const int PIN_ECHO = 34;
 const int PIN_RCWL = 4;
-const int PIN_SERVO_PAN = 13;
-const int PIN_SERVO_TILT = 12;
+const int PIN_SERVO_SCAN = 13; // Continuous scanning radar
+const int PIN_SERVO_PAN  = 12; // Base of the targeting turret
+const int PIN_SERVO_TILT = 14; // Head of the targeting turret
 
 // --- HARDWARE ---
+Servo scanServo;
 Servo panServo;
 Servo tiltServo;
 AsyncWebServer server(80);
@@ -29,8 +31,7 @@ AsyncWebSocket ws("/ws");
 String currentState = "SCANNING";
 KalmanFilter1D kalman(0.5, 4.0);
 
-// --- SERVO CONTROL (CONTINUOUS SWEEP) ---
-int currentPanAngle = 90;
+int currentScanAngle = 90;
 int scanDirection = 1;
 
 unsigned long lastServoMove = 0;
@@ -52,7 +53,7 @@ float measureDistance() {
 void notifyClients() {
     StaticJsonDocument<200> doc;
     doc["state"] = currentState;
-    doc["angle"] = currentPanAngle;
+    doc["angle"] = currentScanAngle;
     doc["distance"] = kalman.getDistance();
     
     char buffer[200];
@@ -69,14 +70,19 @@ void setup() {
 
     ESP32PWM::allocateTimer(0);
     ESP32PWM::allocateTimer(1);
+    ESP32PWM::allocateTimer(2);
     
+    scanServo.setPeriodHertz(50);
     panServo.setPeriodHertz(50);
     tiltServo.setPeriodHertz(50);
+    
+    scanServo.attach(PIN_SERVO_SCAN, 500, 2400);
     panServo.attach(PIN_SERVO_PAN, 500, 2400);
     tiltServo.attach(PIN_SERVO_TILT, 500, 2400);
 
-    panServo.write(currentPanAngle);
-    tiltServo.write(90); // Keep tilt level
+    scanServo.write(currentScanAngle);
+    panServo.write(90);  // Center targeting turret
+    tiltServo.write(90); // Level targeting turret
     
     Serial.println("\n[SYSTEM] Booting Smart Sentry...");
     WiFi.softAP(ssid, password);
@@ -101,45 +107,44 @@ void loop() {
     ws.cleanupClients();
     unsigned long now = millis();
 
-    // 1. CONTINUOUS SWEEP (Smooth 30Hz Movement)
+    // 1. CONTINUOUS SWEEP (Scan Servo Only)
     if (now - lastServoMove >= 30) {
-        currentPanAngle += scanDirection;
-        if (currentPanAngle >= 160) {
-            currentPanAngle = 160;
+        currentScanAngle += scanDirection;
+        if (currentScanAngle >= 160) {
+            currentScanAngle = 160;
             scanDirection = -1;
-        } else if (currentPanAngle <= 20) {
-            currentPanAngle = 20;
+        } else if (currentScanAngle <= 20) {
+            currentScanAngle = 20;
             scanDirection = 1;
         }
-        panServo.write(currentPanAngle);
+        scanServo.write(currentScanAngle);
         lastServoMove = now;
     }
 
-    // 2. SENSOR PINGING (Rapid 50Hz reads while sweeping)
+    // 2. SENSOR PINGING
     if (now - lastSensorRead >= 50) {
         bool rcwlActive = (digitalRead(PIN_RCWL) == HIGH);
         float rawDist = measureDistance();
         
-        // Filter the room mapping to remove sonic glitches
         kalman.update(rawDist);
         float filteredDist = kalman.getDistance();
 
-        // If something is close (< 150cm) and the microwave agrees there is motion
+        // Target Logic
         if (rcwlActive && filteredDist < 150.0) {
             currentState = "THREAT_DETECTED";
+            // Aim the independent targeting turret at the threat
+            panServo.write(currentScanAngle);
         } else {
             currentState = "SCANNING";
         }
         
-        // --- SERIAL DEBUGGING ---
-        // Prints a clean, aligned log every ping for the Serial Monitor
         Serial.printf("[RADAR] Angle: %03d | Raw: %6.1f cm | Filtered: %6.1f cm | RCWL: %d | %s\n", 
-                      currentPanAngle, rawDist, filteredDist, rcwlActive, currentState.c_str());
+                      currentScanAngle, rawDist, filteredDist, rcwlActive, currentState.c_str());
 
         lastSensorRead = now;
     }
 
-    // 3. RAPID WEBSOCKET TELEMETRY (20Hz to plot smooth blips)
+    // 3. TELEMETRY
     if (now - lastTelemetry >= 50) { 
         notifyClients();
         lastTelemetry = now;
