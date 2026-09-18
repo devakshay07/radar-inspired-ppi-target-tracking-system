@@ -1,0 +1,7 @@
+Component,Quantity,Purpose,Estimated Cost
+ESP32 (38-pin),1,Main Controller,TBD
+HC-SR04,1,Ultrasonic Distance Sensor,TBD
+RCWL-0516,1,Microwave Motion Sensor,TBD
+SG90 Servo,3,Scanning/Aiming (Pan/Tilt),TBD
+CA6009 Boost Converter,1,5V Power Regulation for Servos,TBD
+18650 Li-ion Cell,1,Power Supply,TBD

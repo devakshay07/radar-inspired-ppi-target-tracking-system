@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <rect x="100" y="50" width="200" height="50" rx="10" fill="#cce5ff" stroke="#333"/>
+  <text x="200" y="80" font-family="Arial" font-size="14" text-anchor="middle">Initialize Hardware</text>
+  <rect x="100" y="150" width="200" height="50" fill="#fff3cd" stroke="#333"/>
+  <text x="200" y="180" font-family="Arial" font-size="14" text-anchor="middle">Continuous Scan (Servo)</text>
+  <rect x="100" y="250" width="200" height="50" fill="#d4edda" stroke="#333"/>
+  <text x="200" y="280" font-family="Arial" font-size="14" text-anchor="middle">Measure Distance & Filter</text>
+  <rect x="100" y="350" width="200" height="50" rx="25" fill="#f8d7da" stroke="#333"/>
+  <text x="200" y="380" font-family="Arial" font-size="14" text-anchor="middle">Target Detection Logic</text>
+  <rect x="100" y="450" width="200" height="50" fill="#e2e3e5" stroke="#333"/>
+  <text x="200" y="480" font-family="Arial" font-size="14" text-anchor="middle">WebSockets PPI Update</text>
+  <line x1="200" y1="100" x2="200" y2="150" stroke="#333" stroke-width="2"/>
+  <line x1="200" y1="200" x2="200" y2="250" stroke="#333" stroke-width="2"/>
+  <line x1="200" y1="300" x2="200" y2="350" stroke="#333" stroke-width="2"/>
+  <line x1="200" y1="400" x2="200" y2="450" stroke="#333" stroke-width="2"/>
+  <path d="M 100 475 L 50 475 L 50 175 L 100 175" fill="none" stroke="#333" stroke-width="2"/>
+</svg>
