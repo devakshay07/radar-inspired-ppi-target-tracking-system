@@ -12,13 +12,13 @@
 const char* ssid = "SmartSentry_AP";
 const char* password = "YOUR_WIFI_PASSWORD"; // MUST CHANGE
 
-// --- PINS ---
+// --- PINS (MIGRATED TO SAFE PINS) ---
 const int PIN_TRIG = 5;
 const int PIN_ECHO = 34;
 const int PIN_RCWL = 4;
-const int PIN_SERVO_SCAN = 13; 
-const int PIN_SERVO_PAN  = 12; 
-const int PIN_SERVO_TILT = 14; 
+const int PIN_SERVO_SCAN = 26; 
+const int PIN_SERVO_PAN  = 25; 
+const int PIN_SERVO_TILT = 27; 
 
 // --- HARDWARE ---
 Servo scanServo;
@@ -69,13 +69,13 @@ void setup() {
     pinMode(PIN_ECHO, INPUT);
     pinMode(PIN_RCWL, INPUT);
 
-    // 1. Boot WiFi FIRST (Draws ~400mA spike during RF calibration)
+    // 1. Boot WiFi FIRST 
     WiFi.softAP(ssid, password);
     Serial.print("[WIFI] AP Started. Connect to SSID: ");
     Serial.println(ssid);
     Serial.print("[WIFI] Dashboard IP: ");
     Serial.println(WiFi.softAPIP());
-    delay(1000); // Wait for power to stabilize
+    delay(1000); 
 
     // 2. Boot Web Server
     ws.onEvent([](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len){});
@@ -85,7 +85,7 @@ void setup() {
     });
     server.begin();
     Serial.println("[SYSTEM] Web Server Running.");
-    delay(500); // Stabilize again
+    delay(500); 
 
     // 3. Boot Servos ONE AT A TIME
     ESP32PWM::allocateTimer(0);

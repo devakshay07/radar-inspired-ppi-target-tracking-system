@@ -28,11 +28,11 @@
   <text class="text-pin" x="280" y="300" text-anchor="end">GPIO 4 (RCWL)</text>
   <circle cx="290" cy="296" r="4" fill="#333"/>
   
-  <text class="text-pin" x="280" y="340" text-anchor="end">GPIO 13 (SCAN)</text>
+  <text class="text-pin" x="280" y="340" text-anchor="end">GPIO 26 (SCAN)</text>
   <circle cx="290" cy="336" r="4" fill="#333"/>
-  <text class="text-pin" x="280" y="380" text-anchor="end">GPIO 12 (PAN)</text>
+  <text class="text-pin" x="280" y="380" text-anchor="end">GPIO 25 (PAN)</text>
   <circle cx="290" cy="376" r="4" fill="#333"/>
-  <text class="text-pin" x="280" y="420" text-anchor="end">GPIO 14 (TILT)</text>
+  <text class="text-pin" x="280" y="420" text-anchor="end">GPIO 27 (TILT)</text>
   <circle cx="290" cy="416" r="4" fill="#333"/>
 
   <!-- CA6009 Power -->
@@ -98,8 +98,8 @@
   <path class="wire-sig" d="M 290 216 L 620 216 L 620 170 L 810 170" stroke="#007bff"/> <!-- TRIG (5) -->
   <path class="wire-sig" d="M 290 256 L 640 256 L 640 190 L 810 190" stroke="#28a745"/> <!-- ECHO (34) -->
   <path class="wire-sig" d="M 290 296 L 660 296 L 660 310 L 810 310" stroke="#6f42c1"/> <!-- RCWL (4) -->
-  <path class="wire-sig" d="M 290 336 L 680 336 L 680 430 L 810 430" stroke="#fd7e14"/> <!-- SCAN (13) -->
-  <path class="wire-sig" d="M 290 376 L 700 376 L 700 550 L 810 550" stroke="#e83e8c"/> <!-- PAN (12) -->
-  <path class="wire-sig" d="M 290 416 L 720 416 L 720 670 L 810 670" stroke="#17a2b8"/> <!-- TILT (14) -->
+  <path class="wire-sig" d="M 290 336 L 680 336 L 680 430 L 810 430" stroke="#fd7e14"/> <!-- SCAN (26) -->
+  <path class="wire-sig" d="M 290 376 L 700 376 L 700 550 L 810 550" stroke="#e83e8c"/> <!-- PAN (25) -->
+  <path class="wire-sig" d="M 290 416 L 720 416 L 720 670 L 810 670" stroke="#17a2b8"/> <!-- TILT (27) -->
 
 </svg>
