@@ -1,14 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="100%" height="100%" fill="#ffffff"/>
-  <text x="400" y="30" font-family="Arial" font-size="20" text-anchor="middle">Hardware Wiring Diagram</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#ffffff"/>
+  <text x="400" y="40" font-family="Arial" font-size="20" text-anchor="middle">Hardware Wiring Diagram</text>
   <rect x="300" y="150" width="200" height="100" fill="#e0e0e0" stroke="#333"/>
-  <text x="400" y="200" font-family="Arial" font-size="16" text-anchor="middle">ESP32</text>
+  <text x="400" y="205" font-family="Arial" font-size="16" text-anchor="middle">ESP32</text>
   <rect x="50" y="150" width="150" height="100" fill="#ffcccb" stroke="#333"/>
-  <text x="125" y="200" font-family="Arial" font-size="14" text-anchor="middle">Power (CA6009 Boost)</text>
+  <text x="125" y="205" font-family="Arial" font-size="14" text-anchor="middle">Power (CA6009)</text>
   <rect x="600" y="150" width="150" height="100" fill="#d4edda" stroke="#333"/>
-  <text x="675" y="200" font-family="Arial" font-size="14" text-anchor="middle">Servos & Sensors</text>
+  <text x="675" y="205" font-family="Arial" font-size="14" text-anchor="middle">Servos &amp; Sensors</text>
   <line x1="200" y1="200" x2="300" y2="200" stroke="black" stroke-width="2" stroke-dasharray="5,5"/>
-  <text x="250" y="190" font-family="Arial" font-size="10">Common GND</text>
+  <text x="250" y="190" font-family="Arial" font-size="12" text-anchor="middle">Common GND</text>
   <line x1="200" y1="170" x2="600" y2="170" stroke="red" stroke-width="2"/>
-  <text x="400" y="160" font-family="Arial" font-size="10">5V Power Rail (To Sensors/Servos)</text>
+  <text x="400" y="160" font-family="Arial" font-size="12" text-anchor="middle">5V Power Rail (To Sensors/Servos)</text>
 </svg>

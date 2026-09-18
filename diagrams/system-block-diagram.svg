@@ -1,23 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
-  <rect width="100%" height="100%" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333" />
+    </marker>
+  </defs>
+  <rect width="800" height="400" fill="#ffffff"/>
   <rect x="300" y="150" width="200" height="100" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
-  <text x="400" y="200" font-family="Arial" font-size="20" text-anchor="middle">ESP32 Controller</text>
+  <text x="400" y="200" font-family="Arial" font-size="20" text-anchor="middle" dominant-baseline="middle">ESP32 Controller</text>
   
   <rect x="50" y="50" width="150" height="60" fill="#cce5ff" stroke="#333" stroke-width="2"/>
-  <text x="125" y="85" font-family="Arial" font-size="14" text-anchor="middle">HC-SR04 (Ultrasonic)</text>
+  <text x="125" y="85" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="middle">HC-SR04 (Ultrasonic)</text>
   
   <rect x="50" y="290" width="150" height="60" fill="#cce5ff" stroke="#333" stroke-width="2"/>
-  <text x="125" y="325" font-family="Arial" font-size="14" text-anchor="middle">RCWL-0516 (Microwave)</text>
+  <text x="125" y="325" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="middle">RCWL-0516 (Microwave)</text>
   
   <rect x="600" y="100" width="150" height="60" fill="#d4edda" stroke="#333" stroke-width="2"/>
-  <text x="675" y="135" font-family="Arial" font-size="14" text-anchor="middle">Pan/Tilt Servos</text>
+  <text x="675" y="135" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="middle">Pan/Tilt Servos</text>
   
   <rect x="600" y="240" width="150" height="60" fill="#fff3cd" stroke="#333" stroke-width="2"/>
-  <text x="675" y="275" font-family="Arial" font-size="14" text-anchor="middle">Web PPI Dashboard</text>
+  <text x="675" y="275" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="middle">Web PPI Dashboard</text>
 
   <!-- Arrows -->
-  <line x1="200" y1="80" x2="350" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="200" y1="320" x2="350" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="200" y1="80" x2="300" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="200" y1="320" x2="300" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="500" y1="180" x2="600" y2="130" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="500" y1="220" x2="600" y2="270" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
 </svg>
